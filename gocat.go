@@ -10,7 +10,8 @@ import (
 
 func main() {
 	if 2 == len(os.Args) && os.Args[1] == "-h" {
-		Help()
+		fmt.Println("HELP")
+		os.Exit(0)
 	}
 	if 1 == len(os.Args) {
 		io.Copy(os.Stdout, os.Stdin)
@@ -28,9 +29,4 @@ func main() {
 		reader := bufio.NewReader(file)
 		io.Copy(os.Stdout, reader)
 	}
-}
-
-func Help() {
-	fmt.Println("HELP")
-	os.Exit(0)
 }
