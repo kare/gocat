@@ -1,0 +1,8 @@
+Cat in Go
+=========
+
+% ./gocat < gocat.go && cat gocat.go|./gocat
+
+% ./gocat -h
+
+% ./gocat gocat.go
