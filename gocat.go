@@ -26,7 +26,6 @@ func main() {
 			os.Exit(1)
 		}
 		defer file.Close()
-		reader := bufio.NewReader(file)
-		io.Copy(os.Stdout, reader)
+		io.Copy(os.Stdout, bufio.NewReader(file))
 	}
 }
