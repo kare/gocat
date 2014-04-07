@@ -6,3 +6,6 @@ build:
 
 test:
 	go test -v $(NAME)
+
+clean:
+	rm -rf gocat
