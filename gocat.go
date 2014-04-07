@@ -14,7 +14,9 @@ func main() {
 		os.Exit(0)
 	}
 	if 1 == len(os.Args) {
-		io.Copy(os.Stdout, os.Stdin)
+		if _, err := io.Copy(os.Stdout, os.Stdin); err != nil {
+			panic(err)
+		}
 	}
 	if 2 == len(os.Args) {
 		var (
@@ -26,6 +28,8 @@ func main() {
 			os.Exit(1)
 		}
 		defer file.Close()
-		io.Copy(os.Stdout, bufio.NewReader(file))
+		if _, err := io.Copy(os.Stdout, bufio.NewReader(file)); err != nil {
+			panic(err)
+		}
 	}
 }
