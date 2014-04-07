@@ -10,7 +10,7 @@ import (
 
 func main() {
 	if 2 == len(os.Args) && os.Args[1] == "-h" {
-		fmt.Printf("usage: %s [file]\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "usage: %s [file]\n", os.Args[0])
 		os.Exit(0)
 	}
 	if 1 == len(os.Args) {
