@@ -7,5 +7,8 @@ build:
 test: build
 	go test -v $(NAME)
 
+bench: build
+	go test -v -bench=. $(NAME)
+
 clean:
 	rm -rf gocat

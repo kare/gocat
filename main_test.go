@@ -16,10 +16,12 @@ type (
 func runCommandAndCaptureStdoutAndStderr(cmd string, args ...string) (CommandResult, error) {
 	command := exec.Command(cmd, args...)
 	stderr, err := command.StderrPipe()
+	defer stderr.Close()
 	if err != nil {
 		return CommandResult{}, err
 	}
 	stdout, err := command.StdoutPipe()
+	defer stdout.Close()
 	if err != nil {
 		return CommandResult{}, err
 	}
@@ -28,10 +30,18 @@ func runCommandAndCaptureStdoutAndStderr(cmd string, args ...string) (CommandRes
 		return CommandResult{}, err
 	}
 	errBuf := new(bytes.Buffer)
-	errBuf.ReadFrom(stderr)
+	_, err = errBuf.ReadFrom(stderr)
+	if err != nil {
+		panic(err)
+	}
 	outBuf := new(bytes.Buffer)
-	outBuf.ReadFrom(stdout)
-	command.Wait()
+	_, err = outBuf.ReadFrom(stdout)
+	if err != nil {
+		panic(err)
+	}
+	if err := command.Wait(); err != nil {
+		panic(err)
+	}
 	return CommandResult{outBuf.String(), errBuf.String()}, nil
 }
 
@@ -73,6 +83,30 @@ func TestReadStdingAndOutputStdout(t *testing.T) {
 		t.Errorf("'%s' != '%s'", result.stdout, expected)
 	}
 	if result.stderr != "" {
-		t.Error("Expected STDERR to be empty")
+		t.Errorf("Expected STDERR to be empty: '%s'", result.stderr)
 	}
+}
+
+var avoid_compiler_optimization CommandResult
+
+func runBenchmarkSimpleCatToStdout(b *testing.B, input string) {
+	for n := 0; n < b.N; n++ {
+		result, err := runCommandAndCaptureStdoutAndStderr("./gocat", input)
+		if err != nil {
+			b.Fatalf("Execution error: %s", err)
+		}
+		avoid_compiler_optimization = result
+	}
+}
+
+func BenchmarkSimpleCatToStdoutTestfile(b *testing.B) {
+	runBenchmarkSimpleCatToStdout(b, "tests/testfile.txt")
+}
+
+func BenchmarkSimpleCatToStdoutEtcPasswd(b *testing.B) {
+	runBenchmarkSimpleCatToStdout(b, "/etc/passwd")
+}
+
+func BenchmarkSimpleCatToStdoutLargeFile(b *testing.B) {
+	runBenchmarkSimpleCatToStdout(b, "tests/rand.txt")
 }
