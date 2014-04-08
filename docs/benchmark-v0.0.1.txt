@@ -1,0 +1,13 @@
+go build "github.com/kare/gocat"
+go test -v -bench=. "github.com/kare/gocat"
+=== RUN TestHelpMessageWithHelpArgument
+--- PASS: TestHelpMessageWithHelpArgument (0.00 seconds)
+=== RUN TestReadFileAndOutputStdout
+--- PASS: TestReadFileAndOutputStdout (0.00 seconds)
+=== RUN TestReadStdingAndOutputStdout
+--- PASS: TestReadStdingAndOutputStdout (0.01 seconds)
+PASS
+BenchmarkSimpleCatToStdoutTestfile	    1000	   2320015 ns/op
+BenchmarkSimpleCatToStdoutEtcPasswd	    1000	   2384523 ns/op
+BenchmarkSimpleCatToStdoutLargeFile	    1000	   2637545 ns/op
+ok  	github.com/kare/gocat	8.119s
