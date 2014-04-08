@@ -1,0 +1,22 @@
+#!/bin/bash
+
+function usage() {
+    echo "Usage: `basename $0` [-h] v1.1.1" 1>&2
+    exit 1
+}
+
+if [ -z "$1" -o "$1" == "-h" ]; then
+    usage
+fi
+VERSION=$1
+if [ ${VERSION:0:1} != "v" ]; then
+    usage
+fi
+# Run Benchmark
+make clean
+DOC="docs/benchmark-$VERSION.txt"
+make bench > $DOC
+
+git add $DOC
+git commit -s -m "Release $VERSION"
+./create-tag $VERSION
